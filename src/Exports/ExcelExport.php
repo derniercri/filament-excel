@@ -87,9 +87,13 @@ class ExcelExport implements HasMapping, HasHeadings, FromQuery, ShouldAutoSize,
 
     protected array $recordIds = [];
 
+    protected string $disk;
+
     public function __construct($name)
     {
         $this->name = $name;
+        $this->disk = config('excel.temporary_files.remote_disk') ?: 'filament-excel';
+
     }
 
     public static function make(string $name = 'export'): static
@@ -154,6 +158,11 @@ class ExcelExport implements HasMapping, HasHeadings, FromQuery, ShouldAutoSize,
         return $this->recordIds;
     }
 
+    public function getDisk(): string
+    {
+        return $this->disk;
+    }
+
     protected function getModelInstance(): Model
     {
         return $this->modelInstance ??= new ($this->getModelClass());
@@ -215,7 +224,7 @@ class ExcelExport implements HasMapping, HasHeadings, FromQuery, ShouldAutoSize,
         $userId = auth()->id();
 
         $this
-            ->queueExport($filename, 'filament-excel', $this->getWriterType())
+            ->queueExport($filename, $this->getDisk(), $this->getWriterType())
             ->chain([fn () => ExportFinishedEvent::dispatch($filename, $userId)]);
 
         Notification::make()
