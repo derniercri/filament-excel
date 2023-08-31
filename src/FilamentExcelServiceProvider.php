@@ -8,6 +8,7 @@ use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -47,6 +48,8 @@ class FilamentExcelServiceProvider extends ServiceProvider
 
     public function sendExportFinishedNotification()
     {
+        Log::info('auth id when export finished: ' . auth()->id());
+
         $exports = cache()->pull($this->getNotificationCacheKey(auth()->id()));
 
         if (! filled($exports)) {
@@ -83,6 +86,8 @@ class FilamentExcelServiceProvider extends ServiceProvider
 
     public function cacheExportFinishedNotification(ExportFinishedEvent $event)
     {
+        Log::info('user id when export finished: ' . $event->userId);
+
         if ($event->userId === null) {
             return;
         }
