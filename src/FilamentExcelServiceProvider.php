@@ -52,6 +52,8 @@ class FilamentExcelServiceProvider extends ServiceProvider
 
         $exports = cache()->pull($this->getNotificationCacheKey(auth()->id()));
 
+        Log::info('Exports filled: ' . filled($exports));
+
         if (! filled($exports)) {
             return;
         }
