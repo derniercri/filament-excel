@@ -60,7 +60,7 @@ class FilamentExcelServiceProvider extends ServiceProvider
                 ['path' => $export['filename']]
             );
 
-            if (! Storage::disk(config('excel.temporary_files.remote_disk', 'filament-excel'))->exists($export['filename'])) {
+            if (! Storage::disk('filament-excel')->exists($export['filename'])) {
                 continue;
             }
 
